@@ -89,7 +89,7 @@ function getMonthly(offline = false) {
     : data.monthly ?? data.months ?? data.data ?? [];
   return rows
     .map((r) => ({
-      month: r.month ?? r.date ?? r.label ?? "?",
+      month: r.month ?? r.date ?? r.label ?? r.period ?? "?",
       cost: Number(r.totalCost ?? r.cost ?? r.total_cost ?? 0),
       input: Number(r.inputTokens ?? r.input_tokens ?? 0),
       output: Number(r.outputTokens ?? r.output_tokens ?? 0),
@@ -156,7 +156,12 @@ function refreshMtd(offline) {
 }
 
 // Read cached MTD if younger than ttlMs; otherwise recompute (offline for speed).
-function cachedMtd(ttlMs = 60_000) {
+// ttlMs spans a whole session (not just a render): the SessionStart "warm" hook
+// already refreshes this cache online once per session, so a short TTL would just
+// throw that freshness away after a minute and fall back to the offline snapshot
+// for the rest of the session -- which silently zero-prices any model the bundled
+// offline pricing table doesn't know about yet (e.g. a newly released model).
+function cachedMtd(ttlMs = 6 * 60 * 60 * 1000) {
   try {
     if (existsSync(CACHE_FILE)) {
       const c = JSON.parse(readFileSync(CACHE_FILE, "utf8"));
