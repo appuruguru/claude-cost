@@ -1,0 +1,15 @@
+{
+  "name": "claude-cost",
+  "description": "Month-to-date cost in the status line + slash commands for full usage history and plan cost-effectiveness analysis.",
+  "owner": {
+    "name": "appuruguru",
+    "url": "https://github.com/appuruguru"
+  },
+  "plugins": [
+    {
+      "name": "claude-cost",
+      "source": "./plugins/claude-cost",
+      "description": "Month-to-date cost in the status line + slash commands for full usage history and plan cost-effectiveness analysis."
+    }
+  ]
+}

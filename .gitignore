@@ -1,0 +1,21 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (only relevant if you add dependencies later)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+
+# Local usage exports — these can contain your personal usage data. Do NOT commit.
+claude-cost-*.csv
+claude-cost-*.json
+
+# Local Claude Code overrides
+.claude/settings.local.json
