@@ -156,12 +156,10 @@ function refreshMtd(offline) {
 }
 
 // Read cached MTD if younger than ttlMs; otherwise recompute (offline for speed).
-// ttlMs spans a whole session (not just a render): the SessionStart "warm" hook
-// already refreshes this cache online once per session, so a short TTL would just
-// throw that freshness away after a minute and fall back to the offline snapshot
-// for the rest of the session -- which silently zero-prices any model the bundled
-// offline pricing table doesn't know about yet (e.g. a newly released model).
-function cachedMtd(ttlMs = 6 * 60 * 60 * 1000) {
+// The SessionStart "warm" hook is the real refresh (once per session, online, free).
+// ttlMs is just a dead-man's-switch for a session left open for a very long time --
+// not a freshness schedule -- so it's set generously rather than tuned tightly.
+function cachedMtd(ttlMs = 24 * 60 * 60 * 1000) {
   try {
     if (existsSync(CACHE_FILE)) {
       const c = JSON.parse(readFileSync(CACHE_FILE, "utf8"));
@@ -187,7 +185,10 @@ function statusline() {
   const sessionCost =
     payload?.cost?.total_cost_usd ?? payload?.cost?.total_cost ?? undefined;
 
-  const mtd = cachedMtd();
+  // MTD can never legitimately be less than the current session's own cost --
+  // this session is part of the month. Clamp so a stale cache can never display
+  // a contradiction, regardless of how the TTL above is tuned.
+  const mtd = Math.max(cachedMtd(), sessionCost || 0);
 
   const parts = [];
   if (model) parts.push(`🤖 ${model}`);
