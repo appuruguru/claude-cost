@@ -1,7 +1,7 @@
 # claude-cost
 
-See what Claude Code is *really* costing you — right in the terminal — and get a
-data-driven answer to "which plan is most cost-effective for me?"
+See what your Claude Code usage would cost on pay-as-you-go API billing — right in the
+terminal — and get a data-driven answer to "which plan is most cost-effective for me?"
 
 - **Status line:** month-to-date API-equivalent cost, always in view.
 - **`/claude-cost:report`:** all-time totals, a month-by-month table, and a plan recommendation.
@@ -19,10 +19,15 @@ extracting* from your flat subscription. That's exactly what you want for a swit
 decision: compare your monthly API-equivalent spend against the flat plan prices
 ($20 Pro / $100 Max 5x / $200 Max 20x).
 
-Two honest caveats:
+A few honest caveats:
 - It covers **Claude Code only** — claude.ai chat has no token meter and isn't included.
 - Pro/Max are flat but have **usage caps**, so a very heavy month's API-equivalent number
   might not actually be servable on a cheaper flat tier.
+- Numbers reflect your logs as of the last disk write. Sub-task/subagent usage is included
+  in the totals (verified with a controlled before/after test, not assumed), but a very
+  active in-progress session can briefly run ahead of what `/claude-cost:report` shows —
+  the status line accounts for this by never displaying less than your current session's
+  own live cost.
 
 ## Install
 
@@ -107,8 +112,10 @@ After `/claude-cost:setup`, your status bar shows:
 🤖 Sonnet 4.6  |  💬 $0.42 session  |  📅 $18.90 MTD
 ```
 
-Session cost is read for free from the payload Claude Code hands the status line;
-month-to-date comes from ccusage and is cached for 60s so it stays responsive.
+Session cost is read for free from the payload Claude Code hands the status line.
+Month-to-date is refreshed once per session (via a `SessionStart` hook, at zero token
+cost) and cached for the rest of the session so every render stays instant; it's clamped
+to never display less than your current session's own live cost.
 
 ## A note on trust
 
