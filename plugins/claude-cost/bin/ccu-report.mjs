@@ -397,9 +397,14 @@ switch ((sub || "").toLowerCase()) {
   case "warm":
     warm();
     break;
-  case "export":
-    exportData(rest[0], rest[1]);
+  case "export": {
+    const raw = (rest[0] || "").trim();
+    const sp = raw.indexOf(" ");
+    const fmt = sp === -1 ? raw : raw.slice(0, sp);
+    const outPath = sp === -1 ? undefined : raw.slice(sp + 1).trim() || undefined;
+    exportData(fmt, outPath);
     break;
+  }
   default:
     console.log(
       "Usage: ccu-report.mjs <statusline|report|month [YYYY-MM]|export [csv|json] [path]|warm>"

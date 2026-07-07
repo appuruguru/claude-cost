@@ -1,6 +1,6 @@
 {
   "name": "claude-cost",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Month-to-date cost in your status line, plus slash commands for full usage history and a plan cost-effectiveness recommendation. Built on ccusage.",
   "author": {
     "name": "appuruguru"
