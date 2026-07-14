@@ -29,6 +29,17 @@ A few honest caveats:
   the status line accounts for this by never displaying less than your current session's
   own live cost.
 
+## vs. the built-in `/usage` command
+
+Claude Code ships a built-in `/usage` command. Based on its documentation (we haven't
+been able to get a firsthand look at its live output on every setup, so treat this as a
+best-effort comparison), it's session-local — a breakdown of recent usage by skill,
+subagent, and plugin for the current session or a 24h/7-day window. `claude-cost`
+answers a different question: month-to-date tracking, multi-month historical trends,
+and a data-driven recommendation for which plan (Pro/Max/pay-as-you-go) actually fits
+your usage pattern. The two aren't redundant — `/usage` is about *this session*;
+`claude-cost` is about your spend *over time*.
+
 ## Install
 
 ```
